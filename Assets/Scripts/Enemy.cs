@@ -24,12 +24,7 @@ public class Enemy : MonoBehaviour
         anim = GetComponent<Animator>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-    public void Hit()
+    public void Hit() //fonction appelée lorsque l'ennemi est touché par une attaque du joueur
     {
         health--;
         if (health==0)
@@ -38,7 +33,7 @@ public class Enemy : MonoBehaviour
             StartCoroutine(deathCo());
         }
     }
-    IEnumerator deathCo()
+    IEnumerator deathCo() // coroutine pour la gestion de la mort d'un ennemi
     {
         yield return new WaitForSeconds(.3f);
         this.gameObject.SetActive(false);

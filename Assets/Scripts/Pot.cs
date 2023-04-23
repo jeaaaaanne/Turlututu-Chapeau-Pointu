@@ -11,7 +11,7 @@ public class Pot : MonoBehaviour
         anim = GetComponent<Animator>();
     }
 
-    public void Smash()
+    public void Smash() // fonction appelée lorsqu'une collision est détectée entre le collider d'attaque du personnage et un pot
     {
         anim.SetBool("smash", true);
         StartCoroutine(breakCo());

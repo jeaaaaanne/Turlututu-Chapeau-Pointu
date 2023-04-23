@@ -12,15 +12,10 @@ public class RoomMove : MonoBehaviour
 
     void Start()
     {
-        //cam = Camera.main.GetComponent<CameraMovement>();
         cam = GameObject.FindWithTag("MainCamera").GetComponent<CameraMovement>();
     }
 
-    void Update()
-    {
-        
-    }
-
+    // lorsque le personnage arrive dans une zone de transition entre deux pièces, lui et la caméra sont déplacés 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if(collision.CompareTag("Player"))

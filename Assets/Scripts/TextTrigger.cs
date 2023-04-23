@@ -17,9 +17,12 @@ public class TextTrigger : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        // lorsque le joueur entre dans la zone, cela active le texte et sa transition
         if (collision.CompareTag("Player"))
         {
-            audioController.movesBlocked = true;
+            // il est nécessaire de bloquer les mouvements pour éviter qu'il ne se passe des choses en arrière plan durant la lecture
+            audioController.movesBlocked = true; 
+            // activation du texte et des transitions entre ses petites parties
             text.SetActive(true);
             textTransition.enabled = true;
         }

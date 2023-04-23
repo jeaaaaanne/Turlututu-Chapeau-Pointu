@@ -27,9 +27,10 @@ public class Log : Enemy
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(hasToAct);
         transform.position = Vector3.MoveTowards(transform.position, movePoint.position, moveSpeed * Time.deltaTime);
         canMove = audioController.canMove;
+
+        // la variable hasToAct permet de savoir si on est au tout début d'un beat (et donc le log doit bouger)
         // l'ennemi ne pourra agir que 1 beat sur 2, lors de la première frame du beat
         if((canMove==true && previousCanMove==false) || hasToAct ==1)
         {
@@ -41,17 +42,20 @@ public class Log : Enemy
         }
         if (Vector3.Distance(transform.position, movePoint.position) <= 0.05f && hasToAct ==1)
         {
+            // si la cible est dans son champs de vision, le log se déplace vers elle
+            // si la cible est à portée d'attaque, le log ataque
             CheckDistance();
         }
         else if(Vector3.Distance(transform.position, movePoint.position) >= 0.05f)
         {
+            // mise à jour de l'animation et déplacement du log
             UpdateAnimationsAndMove();
         }
         previousCanMove = canMove;
     }
     void CheckDistance()
     {
-        if(Vector3.Distance(target.position, transform.position)<= chaseRadius && Vector3.Distance(target.position, transform.position) > attackRadius)
+        if(Vector3.Distance(target.position, transform.position)<= chaseRadius && Vector3.Distance(target.position, transform.position) > attackRadius) // déplacement du log
         {
             if(currentState==EnemyState.idle || currentState==EnemyState.walk)
             {
@@ -60,7 +64,7 @@ public class Log : Enemy
                 anim.SetBool("wakeUp", true);
             }
         }
-        else if(Mathf.Round(Mathf.Abs(Vector3.Distance(target.position,transform.position)))==1)
+        else if(Mathf.Round(Mathf.Abs(Vector3.Distance(target.position,transform.position)))==1) // attaque du log
         {
             StartCoroutine(AttackCo());
             PlayerHealth playerHealth = GameObject.FindWithTag("Player").GetComponent<PlayerHealth>();
@@ -68,12 +72,12 @@ public class Log : Enemy
             HealthHeartBar healthHeartBar = GameObject.FindWithTag("HealthHolder").GetComponent<HealthHeartBar>();
             healthHeartBar.DrawHearts();
         }
-        else
+        else // il se rendort si la cible est trop loin
         {
             anim.SetBool("wakeUp", false);
         }
     }
-    void MoveMovePoint()
+    void MoveMovePoint() // déplacement du movePoint du log, en fonction de la position de sa cible (pour s'en rapprocher au plus vite)
     {
         float horizontalDistance = target.position.x - transform.position.x;
         float verticalDistance = target.position.y - transform.position.y;
@@ -117,7 +121,7 @@ public class Log : Enemy
             currentState = newState;
         }
     }
-    void UpdateAnimationsAndMove()
+    void UpdateAnimationsAndMove() 
     {
         anim.SetBool("moving", true);
         float deplacementX = movePoint.position.x - transform.position.x;
@@ -125,7 +129,7 @@ public class Log : Enemy
         anim.SetFloat("moveX", deplacementX);
         anim.SetFloat("moveY", deplacementY);
     }
-    private IEnumerator AttackCo()
+    private IEnumerator AttackCo() // coroutine pour l'attaque du log
     {
         anim.SetBool("attacking", true);
         currentState = EnemyState.attack;

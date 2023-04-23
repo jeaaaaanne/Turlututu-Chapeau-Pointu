@@ -5,15 +5,10 @@ using UnityEngine;
 public class CameraMovement : MonoBehaviour
 {
     public Transform target;
-    public float smoothing;
-    public Vector2 maxPosition;
-    public Vector2 minPosition;
-    void Start()
-    {
-        
-    }
+    public float smoothing; // plus sa valeur est importante, plpus la caméra va se déplacer rapidement vers le personnage
+    public Vector2 maxPosition; // limites max en x et y pour ne pas sortir de la carte
+    public Vector2 minPosition; // limites min en x et y pour ne pas sortir de la carte
 
-    // Update is called once per frame
     void LateUpdate()
     {
         if(transform.position != target.position)

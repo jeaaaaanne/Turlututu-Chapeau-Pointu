@@ -17,10 +17,12 @@ public class PlayerMovement : MonoBehaviour
     public Transform movePoint;
     public PlayerState currentState;
 
-    public LayerMask whatStopsMovement;
+    public LayerMask whatStopsMovement; // layer associé à tous les objets considérés comme des obstacles
 
     public Animator animator;
     public AudioController audioController;
+
+    // booléens pour la gestion du déplacement : 
     public bool canMove;
     private bool flag=false;
     private bool previousCanMove;
@@ -31,20 +33,21 @@ public class PlayerMovement : MonoBehaviour
     {
         currentState = PlayerState.walk;
         animator = GetComponent<Animator>();
-        //myRigidbody = GetComponent<Rigidbody2D>();
-        movePoint.parent = null;
+        movePoint.parent = null; // le movePoint se détache de son parent
         audioController = GetComponent<AudioController>();
         animator.SetFloat("moveX", 0);
         animator.SetFloat("moveY", -1);
     }
     void Update()
     {
-        if (Input.GetKey("escape")) // pour quitter l'application, tant qu'il n'y a pas de menu
+        // Pour quitter l'application, tant qu'il n'y a pas de menu :
+        if (Input.GetKey("escape")) 
         {
             Application.Quit();
         }
+
+        // déplacement du personnage vers son movePoint
         transform.position = Vector3.MoveTowards(transform.position, movePoint.position, moveSpeed * Time.deltaTime);
-        //myRigidbody.position = Vector3.MoveTowards(transform.position, movePoint.position, moveSpeed * Time.deltaTime);
 
         canMove = audioController.canMove;
         playerIsActing = Input.anyKeyDown; // true si le joueur appuie
@@ -55,6 +58,7 @@ public class PlayerMovement : MonoBehaviour
             flag = true;
         }
 
+        // si le joueur souhaite attaquer 
         if (Input.GetButtonDown("attack") && currentState != PlayerState.attack)
         {
             if (flag == true)
@@ -62,6 +66,7 @@ public class PlayerMovement : MonoBehaviour
                 StartCoroutine(AttackCo());
             }
         }
+        // si le joueur souhaite se déplacer
         else if (Vector3.Distance(transform.position, movePoint.position) <= 0.05f) // l'objet movePoint et le perso sont au même endroit donc on peut réenclencher un déplacement (le perso est actuellement à l'arrêt) // à changer avec currentState wlaking ?
         {
             animator.SetBool("moving", false); 
@@ -82,6 +87,7 @@ public class PlayerMovement : MonoBehaviour
                 }
             }
         }
+        // si aucune action n'est possible car le personnage est déjà en mouvement
         else if (Vector3.Distance(transform.position, movePoint.position) >= 0.05f) // else if(currentState === PlayerState.walk)
         {
             // Le joueur est en mouvement, gestion des animations :
@@ -116,7 +122,7 @@ public class PlayerMovement : MonoBehaviour
         animator.SetFloat("moveX", deplacementX);
         animator.SetFloat("moveY", deplacementY);
     }
-    private IEnumerator AttackCo()
+    private IEnumerator AttackCo() // coroutine pour l'attaque du personnage
     {
         animator.SetBool("attacking", true);
         currentState = PlayerState.attack;
